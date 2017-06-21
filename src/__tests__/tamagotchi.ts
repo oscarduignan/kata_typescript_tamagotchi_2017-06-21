@@ -31,8 +31,8 @@ class Tamagotchi {
     return <TamagotchiState>{
       ...previousState,
       lastFed: !previousState.hungry ? previousState.lastFed + 1 : 0,
-      hungry: previousState.hungry || previousState.lastFed === 4,
-    }
+      hungry: previousState.hungry || previousState.lastFed === 4
+    };
   }
 
   isHungry = (): Boolean => this.state.hungry;
