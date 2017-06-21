@@ -54,23 +54,23 @@ it("should refuse food if you try to feed it when its full", () => {
 it("should get angry if you try to feed it twice while its full", () => {
   let mi = new Tamagotchi();
   mi.feed();
-  expect(mi.isAngry()).toBeFalsy()
+  expect(mi.isAngry()).toBeFalsy();
   try {
     mi.feed();
   } catch (TamagotchiFullError) {}
-  expect(mi.isAngry()).toBeTruthy()
-})
+  expect(mi.isAngry()).toBeTruthy();
+});
 
 it("should no longer be angry after its been fed successfully", () => {
   let mi = new Tamagotchi();
   mi.feed();
-  expect(mi.isAngry()).toBeFalsy()
+  expect(mi.isAngry()).toBeFalsy();
   try {
     mi.feed();
   } catch (TamagotchiFullError) {}
-  expect(mi.isAngry()).toBeTruthy()
+  expect(mi.isAngry()).toBeTruthy();
   jest.runTimersToTime(5000);
-  expect(mi.isHungry()).toBeTruthy()
-  mi.feed()
-  expect(mi.isAngry()).toBeFalsy()
-})
+  expect(mi.isHungry()).toBeTruthy();
+  mi.feed();
+  expect(mi.isAngry()).toBeFalsy();
+});
