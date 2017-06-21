@@ -4,21 +4,48 @@ class TamagotchiError {}
 
 class TamagotchiFullError extends TamagotchiError {}
 
+type TamagotchiState = {
+  hungry: boolean;
+  angry: boolean;
+  lastFed: number;
+};
+
 class Tamagotchi {
-  constructor(private hungry: Boolean = true, private angry: Boolean = false) {}
+  private lifecycleTimeout: Number;
 
-  isHungry = () => this.hungry;
+  constructor(
+    private state: TamagotchiState = {
+      hungry: true,
+      angry: false,
+      lastFed: 0
+    },
+    private lifecycleInterval: Number = 1000
+  ) {
+    this.lifecycleTimeout = setInterval(
+      () => (this.state = Tamagotchi.evolve(this.state)),
+      this.lifecycleInterval
+    );
+  }
 
-  isAngry = () => this.angry;
+  private static evolve(previousState: TamagotchiState): TamagotchiState {
+    return <TamagotchiState>{
+      ...previousState,
+      lastFed: !previousState.hungry ? previousState.lastFed + 1 : 0,
+      hungry: previousState.hungry || previousState.lastFed === 4,
+    }
+  }
 
-  feed() {
-    if (!this.hungry) {
-      this.angry = true;
+  isHungry = (): Boolean => this.state.hungry;
+
+  isAngry = (): Boolean => this.state.angry;
+
+  feed(): void {
+    if (!this.isHungry()) {
+      this.state.angry = true;
       throw new TamagotchiFullError();
     }
-    this.angry = false;
-    this.hungry = false;
-    setTimeout(() => (this.hungry = true), 5000);
+    this.state.angry = false;
+    this.state.hungry = false;
   }
 }
 
@@ -51,7 +78,7 @@ it("should refuse food if you try to feed it when its full", () => {
   }).toThrow(TamagotchiFullError);
 });
 
-it("should get angry if you try to feed it twice while its full", () => {
+it("should get angry if you try to feed it too often while its full", () => {
   let mi = new Tamagotchi();
   mi.feed();
   expect(mi.isAngry()).toBeFalsy();
